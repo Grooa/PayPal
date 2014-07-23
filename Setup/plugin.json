@@ -1,24 +1,25 @@
 {
-    "title": "PayPal Subscription",
+    "title": "PayPal",
     "version": "1.00",
     "name": "PayPal",
-    "description": "Add PayPal subscription payment method to your website.",
+    "description": "Add PayPal standard payment method to your website.",
     "author": "ImpressPages",
     "options": [
         {
-            "label": "PayPal email",
+            "label": "Mode",
+            "name": "testMode",
+            "type": "select",
+            "values": ["Production", "Test", "Skip Payment (development)"],
+            "default": "Production"
+        },
+        {
+            "label": "PayPal email (production mode)",
             "name": "paypalEmail",
             "type": "text",
             "default": ""
         },
         {
-            "label": "Test mode",
-            "name": "testMode",
-            "type": "checkbox",
-            "default": 0
-        },
-        {
-            "label": "PayPal email (for test mode)",
+            "label": "PayPal email (test mode)",
             "name": "paypalEmailTest",
             "type": "text",
             "default": ""
