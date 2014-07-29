@@ -14,16 +14,14 @@ class Worker
     public function activate()
     {
 
-        $table = ipTable('paypal_subscription');
+        $table = ipTable('paypal');
         $sql="
         CREATE TABLE IF NOT EXISTS $table (
           `id` int(11) NOT NULL AUTO_INCREMENT,
           `userId` int(11) NOT NULL,
           `item` varchar(255) NOT NULL,
           `currency` varchar(3) NOT NULL,
-          `a3` int(11) NOT NULL,
-          `p3` int(11) NOT NULL,
-          `t3` char(1) NOT NULL,
+          `price` int(11) NOT NULL COMMENT 'in cents',
           `isActive` tinyint(1) DEFAULT 0,
           `createdAt` datetime NOT NULL,
         PRIMARY KEY (`id`)

@@ -7,7 +7,7 @@
     "options": [
         {
             "label": "Mode",
-            "name": "testMode",
+            "name": "mode",
             "type": "select",
             "values": ["Production", "Test", "Skip Payment (development)"],
             "default": "Production"

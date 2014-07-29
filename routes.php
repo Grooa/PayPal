@@ -4,7 +4,7 @@ $routes['PayPal{/orderId}'] = array(
     'name' => 'PayPal',
     'plugin' => 'PayPal',
     'controller' => 'SiteController',
-    'action' => 'subscribe'
+    'action' => 'pay'
 );
 
 

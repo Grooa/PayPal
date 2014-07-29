@@ -22,39 +22,23 @@ class Model
         $data = array(
             'item' => $paymentData['item'],
             'currency' => $paymentData['currency'],
+            'price' => $paymentData['price'],
             'userId' => $userId,
-            'createdAt' => date('Y-m-d H:i:s')
+            'createdAt' => date('Y-m-d H:i:s'),
         );
 
-        switch($paymentData['periodType']) {
-            case 'day':
-                $data['t3'] = 'D';
-                break;
-            case 'week':
-                $data['t3'] = 'W';
-                break;
-            case 'month':
-                $data['t3'] = 'M';
-                break;
-            case 'year':
-                $data['t3'] = 'Y';
-                break;
-        }
 
-        $data['p3'] = $paymentData['period'];
-        $data['a3'] = $paymentData['amount'];
-
-        $orderId = ipDb()->insert('paypal_subscription', $data);
+        $orderId = ipDb()->insert('paypal', $data);
         return $orderId;
     }
 
     public static function getOrder($orderId)
     {
-        $order = ipDb()->selectRow('paypal_subscription', '*', array('id' => $orderId));
+        $order = ipDb()->selectRow('paypal', '*', array('id' => $orderId));
         return $order;
     }
     public static function update($orderId, $data)
     {
-        ipDb()->update('paypal_subscription', $data, array('id' => $orderId));
+        ipDb()->update('paypal', $data, array('id' => $orderId));
     }
 }

@@ -10,7 +10,7 @@ namespace Plugin\PayPal;
 
 class SiteController extends \Ip\Controller
 {
-    public function subscribe($orderId)
+    public function pay($orderId)
     {
         $order = Model::getOrder($orderId);
         if (!$order) {
