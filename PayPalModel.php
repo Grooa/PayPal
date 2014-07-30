@@ -63,7 +63,7 @@ class PayPalModel
         $orderId = isset($customData['orderId']) ? $customData['orderId'] : null;
         $currency = isset($postData['mc_currency']) ? $postData['mc_currency'] : null;
         $receiver = isset($postData['receiver_email']) ? $postData['receiver_email'] : null;
-        $amount = isset($postData['amount']) ? $postData['amount'] : null;
+        $amount = isset($postData['mc_gross']) ? $postData['mc_gross'] : null;
         $test = isset($postData['test_ipn']) ? $postData['test_ipn'] : null;
 
 
@@ -74,51 +74,72 @@ class PayPalModel
 
 
 
+        switch ($postData['payment_status']) {
+            case 'Completed':
+                $order = Model::getOrder($orderId);
 
+                if (!$order) {
+                    ipLog()->error('PayPal.ipn: Order not found.', array('orderId' => $orderId));
+                    return;
+                }
 
-        $order = Model::getOrder($orderId);
+                if ($order['currency'] != $currency) {
+                    ipLog()->error('PayPal.ipn: IPN rejected. Currency doesn\'t match', array('paypal currency' => $currency, 'expected currency' => $order['currency']));
+                    return;
+                }
 
-        if (!$order) {
-            ipLog()->error('PayPal.ipn: Order not found.', array('orderId' => $orderId));
-            return;
+                $orderPrice = substr_replace($order['price'], '.', -2, 0);
+                if ($amount != $orderPrice) {
+                    ipLog()->error('PayPal.ipn: IPN rejected. Price doesn\'t match', array('paypal price' => $amount, 'expected price' => '' . $orderPrice));
+                    return;
+                }
+
+                if ($receiver != $this->getEmail()) {
+                    ipLog()->error('PayPal.ipn: IPN rejected. Recipient doesn\'t match', array('paypal recipient' => $receiver, 'expected recipient' => $this->getEmail()));
+                    return;
+                }
+
+                if ($response["httpResponse"] != 'VERIFIED') {
+                    ipLog()->error('PayPal.ipn: Paypal doesn\'t recognize the payment', $response);
+                    return;
+                }
+
+                if ($order['isPaid']) {
+                    ipLog()->error('PayPal.ipn: Order is already paid', $response);
+                    return;
+                }
+
+                $info = array(
+                    'orderId' => $order['id'],
+                    'item' => $order['item'],
+                    'userId' => $order['userId']
+                );
+
+                ipLog()->info('PayPal.ipn: Successful payment', $info);
+
+                ipEvent('ipPaymentReceived', $info);
+
+                $newData = array(
+                    'isPaid' => 1
+                );
+                if (isset($postData['first_name'])) {
+                    $newData['payer_first_name'] = $postData['first_name'];
+                }
+                if (isset($postData['last_name'])) {
+                    $newData['payer_last_name'] = $postData['last_name'];
+                }
+                if (isset($postData['payer_email'])) {
+                    $newData['payer_email'] = $postData['payer_email'];
+                }
+                if (isset($postData['residence_country'])) {
+                    $newData['payer_country'] = $postData['residence_country'];
+                }
+
+                Model::update($orderId, $newData);
+
+                break;
         }
 
-        if ($order['currency'] != $currency) {
-            ipLog()->error('PayPal.ipn: IPN rejected. Currency doesn\'t match', array('paypal currency' => $currency, 'expected currency' => $order['currency']));
-            return;
-        }
-
-        $orderPrice = substr_replace($order['price'], '.', -2, 0);
-        if ($amount != $orderPrice) {
-            ipLog()->error('PayPal.ipn: IPN rejected. Price doesn\'t match', array('paypal price' => $amount, 'expected price' => '' . $orderPrice));
-            return;
-        }
-
-        if ($receiver != $this->getEmail()) {
-            ipLog()->error('PayPal.ipn: IPN rejected. Recipient doesn\'t match', array('paypal recipient' => $receiver, 'expected recipient' => $this->getEmail()));
-            return;
-        }
-
-        if ($response["httpResponse"] != 'VERIFIED') {
-            ipLog()->error('PayPal.ipn: Paypal doesn\'t recognize the payment', $response);
-            return;
-        }
-
-        if ($order['isPaid']) {
-            ipLog()->error('PayPal.ipn: Order is already paid', $response);
-            return;
-        }
-
-        $info = array(
-            'orderId' => $order['id'],
-            'item' => $order['item'],
-            'userId' => $order['userId']
-        );
-
-        ipLog()->info('PayPal.ipn: Successful payment', $info);
-
-        ipEvent('ipPaymentReceived', $info);
-        Model::update($orderId, array('isPaid' => 1));
 
 
 

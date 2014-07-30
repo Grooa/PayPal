@@ -23,6 +23,10 @@ class Worker
           `currency` varchar(3) NOT NULL,
           `price` int(11) NOT NULL COMMENT 'in cents',
           `isPaid` tinyint(1) DEFAULT 0,
+          `payer_first_name` VARCHAR(255) NULL,
+          `payer_last_name` VARCHAR(255) NULL,
+          `payer_email` VARCHAR(255) NULL,
+          `payer_country` VARCHAR(255) NULL,
           `createdAt` datetime NOT NULL,
         PRIMARY KEY (`id`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

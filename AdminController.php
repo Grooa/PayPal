@@ -19,7 +19,7 @@ class AdminController {
     {
         $config = array(
             'table' => 'paypal',
-            'orderBy' => 'id desc',
+            'orderBy' => '`id` desc',
             'fields' => array(
                 array(
                     'label' => __('Id', 'PayPal', false),
@@ -50,6 +50,22 @@ class AdminController {
                     'label' => __('User ID', 'PayPal', false),
                     'field' => 'userId',
                     'type' => 'Integer'
+                ),
+                array(
+                    'label' => __('First Name', 'PayPal', false),
+                    'field' => 'payer_first_name'
+                ),
+                array(
+                    'label' => __('Last Name', 'PayPal', false),
+                    'field' => 'payer_last_name'
+                ),
+                array(
+                    'label' => __('Email', 'PayPal', false),
+                    'field' => 'payer_email'
+                ),
+                array(
+                    'label' => __('Country', 'PayPal', false),
+                    'field' => 'payer_country'
                 ),
                 array(
                     'label' => __('Created At', 'PayPal', false),
