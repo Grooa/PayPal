@@ -19,6 +19,7 @@ class AdminController {
     {
         $config = array(
             'table' => 'paypal',
+            'orderBy' => 'id desc',
             'fields' => array(
                 array(
                     'label' => __('Id', 'PayPal', false),
@@ -27,27 +28,28 @@ class AdminController {
                     'allowInsert' => false
                 ),
                 array(
-                    'label' => __('User ID', 'PayPal', false),
-                    'field' => 'userId',
-                    'type' => 'Integer'
-                ),
-                array(
                     'label' => __('Item', 'PayPal', false),
                     'field' => 'item'
+                ),
+                array(
+                    'label' => __('Price', 'PayPal', false),
+                    'field' => 'price',
+                    'type' => 'Currency',
+                    'currencyField' => 'currency'
                 ),
                 array(
                     'label' => __('Currency', 'PayPal', false),
                     'field' => 'currency'
                 ),
                 array(
-                    'label' => __('Price', 'PayPal', false),
-                    'field' => 'price',
-                    'type' => 'Currency'
-                ),
-                array(
                     'label' => __('Paid', 'PayPal', false),
                     'field' => 'isPaid',
                     'type' => 'Checkbox'
+                ),
+                array(
+                    'label' => __('User ID', 'PayPal', false),
+                    'field' => 'userId',
+                    'type' => 'Integer'
                 ),
                 array(
                     'label' => __('Created At', 'PayPal', false),
