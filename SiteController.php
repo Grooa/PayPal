@@ -18,17 +18,11 @@ class SiteController extends \Ip\Controller
         }
 
 
-        if (!$order['userId']) {
-            if (!ipUser()->loggedIn()) {
-                throw new \Ip\Exception('User is not logged in');
-            }
+        if (!$order['userId'] && ipUser()->loggedIn()) {
             Model::update($orderId, array('userId' => ipUser()->userId()));
-            $order = Model::getOrder($orderId);
         }
 
-
         $paypalModel = PayPalModel::instance();
-
 
         $data = array(
             'form' => $paypalModel->getPaypalForm($orderId)

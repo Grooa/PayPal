@@ -11,6 +11,6 @@ class Event
 {
     public static function ipBeforeController()
     {
-        ipAddJs('assets/PayPal.js');
+        ipAddJs('assets/paypal.js');
     }
 }

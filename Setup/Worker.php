@@ -22,7 +22,7 @@ class Worker
           `item` varchar(255) NOT NULL,
           `currency` varchar(3) NOT NULL,
           `price` int(11) NOT NULL COMMENT 'in cents',
-          `isActive` tinyint(1) DEFAULT 0,
+          `isPaid` tinyint(1) DEFAULT 0,
           `createdAt` datetime NOT NULL,
         PRIMARY KEY (`id`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

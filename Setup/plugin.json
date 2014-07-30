@@ -9,7 +9,7 @@
             "label": "Mode",
             "name": "mode",
             "type": "select",
-            "values": ["Production", "Test", "Skip Payment (development)"],
+            "values": ["Production", "Test", "Skip"],
             "default": "Production"
         },
         {

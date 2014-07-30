@@ -12,9 +12,9 @@ class PayPalModel
     const PAYPAL_POST_URL_TEST = 'https://www.sandbox.paypal.com/cgi-bin/webscr';
     const PAYPAL_POST_URL = 'https://www.paypal.com/cgi-bin/webscr';
 
-    const MODE_PRODUCTION = 'production';
-    const MODE_TEST = 'test';
-    const MODE_SKIP = 'skip';
+    const MODE_PRODUCTION = 'Production';
+    const MODE_TEST = 'Test';
+    const MODE_SKIP = 'Skip';
 
 
     protected static $instance;
@@ -88,7 +88,7 @@ class PayPalModel
             return;
         }
 
-        $orderPrice = substr_replace($order['amount'], '.', -2, 0);
+        $orderPrice = substr_replace($order['price'], '.', -2, 0);
         if ($amount != $orderPrice) {
             ipLog()->error('PayPal.ipn: IPN rejected. Price doesn\'t match', array('paypal price' => $amount, 'expected price' => '' . $orderPrice));
             return;
@@ -189,14 +189,17 @@ class PayPalModel
 
 
         $values = array(
+            'cmd' => '_xclick',
+            'character' => 'utf-8',
             'business' => $this->getEmail(),
-            'amount' => $order['amount'] / 100,
+            'amount' => $order['price'] / 100,
             'currency_code' => $currency,
             'no_shipping' => 1,
             'custom' => json_encode($privateData),
             'return' => ipRouteUrl('PayPal_ipn'),
             'notify_url' => ipRouteUrl('PayPal_ipn'),
-            'item_name' => $order['item']
+            'item_name' => $order['item'],
+            'item_number' => $order['id']
         );
 
         $form = new \Ip\Form();
