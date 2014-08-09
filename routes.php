@@ -1,7 +1,7 @@
 <?php
 
-$routes['PayPal{/paymentId}'] = array(
-    'name' => 'PayPal',
+$routes['PayPal/{paymentId}/{securityCode}'] = array(
+    'name' => 'PayPal_pay',
     'plugin' => 'PayPal',
     'controller' => 'SiteController',
     'action' => 'pay'

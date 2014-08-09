@@ -10,7 +10,7 @@ namespace Plugin\PayPal;
 
 class SiteController extends \Ip\Controller
 {
-    public function pay($paymentId)
+    public function pay($paymentId, $securityCode)
     {
         $order = Model::getPayment($paymentId);
         if (!$order) {
@@ -24,9 +24,7 @@ class SiteController extends \Ip\Controller
         }
 
         if ($order['isPaid']) {
-            //TODOX
-            //display order page
-            $answer = 'paid';
+            $answer = new \Ip\Response\Redirect(ipRouteUrl(array('paymentId' => $paymentId, 'securityCode' => $securityCode)));
         } else {
             //redirect to the payment
             $paypalModel = PayPalModel::instance();

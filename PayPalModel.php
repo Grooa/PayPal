@@ -228,7 +228,7 @@ class PayPalModel
             'custom' => json_encode($privateData),
             'return' => ipRouteUrl('PayPal_userBack'),
             'notify_url' => ipRouteUrl('PayPal_ipn'),
-            'item_name' => $payment['item'],
+            'item_name' => $payment['title'],
             'item_number' => $payment['id']
         );
 
