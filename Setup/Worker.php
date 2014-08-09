@@ -18,8 +18,9 @@ class Worker
         $sql="
         CREATE TABLE IF NOT EXISTS $table (
           `id` int(11) NOT NULL AUTO_INCREMENT,
+          `orderId` varchar(255) NOT NULL COMMENT 'unique order id from shopping cart',
           `userId` int(11) NOT NULL,
-          `item` varchar(255) NOT NULL,
+          `title` varchar(255) NOT NULL,
           `currency` varchar(3) NOT NULL,
           `price` int(11) NOT NULL COMMENT 'in cents',
           `isPaid` tinyint(1) DEFAULT 0,

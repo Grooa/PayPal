@@ -76,19 +76,19 @@ class PayPalModel
 
         switch ($postData['payment_status']) {
             case 'Completed':
-                $order = Model::getPayment($paymentId);
+                $payment = Model::getPayment($paymentId);
 
-                if (!$order) {
+                if (!$payment) {
                     ipLog()->error('PayPal.ipn: Order not found.', array('paymentId' => $paymentId));
                     return;
                 }
 
-                if ($order['currency'] != $currency) {
-                    ipLog()->error('PayPal.ipn: IPN rejected. Currency doesn\'t match', array('paypal currency' => $currency, 'expected currency' => $order['currency']));
+                if ($payment['currency'] != $currency) {
+                    ipLog()->error('PayPal.ipn: IPN rejected. Currency doesn\'t match', array('paypal currency' => $currency, 'expected currency' => $payment['currency']));
                     return;
                 }
 
-                $orderPrice = substr_replace($order['price'], '.', -2, 0);
+                $orderPrice = substr_replace($payment['price'], '.', -2, 0);
                 if ($amount != $orderPrice) {
                     ipLog()->error('PayPal.ipn: IPN rejected. Price doesn\'t match', array('paypal price' => $amount, 'expected price' => '' . $orderPrice));
                     return;
@@ -104,15 +104,17 @@ class PayPalModel
                     return;
                 }
 
-                if ($order['isPaid']) {
+                if ($payment['isPaid']) {
                     ipLog()->error('PayPal.ipn: Order is already paid', $response);
                     return;
                 }
 
                 $info = array(
-                    'paymentId' => $order['id'],
-                    'item' => $order['item'],
-                    'userId' => $order['userId']
+                    'id' => $payment['orderId'],
+                    'paymentId' => $payment['id'],
+                    'paymentMethod' => 'PayPal',
+                    'title' => $payment['title'],
+                    'userId' => $payment['userId']
                 );
 
                 ipLog()->info('PayPal.ipn: Successful payment', $info);

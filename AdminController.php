@@ -22,14 +22,14 @@ class AdminController {
             'orderBy' => '`id` desc',
             'fields' => array(
                 array(
-                    'label' => __('Id', 'PayPal', false),
-                    'field' => 'id',
+                    'label' => __('Order ID', 'PayPal', false),
+                    'field' => 'orderId',
                     'allowUpdate' => false,
                     'allowInsert' => false
                 ),
                 array(
-                    'label' => __('Item', 'PayPal', false),
-                    'field' => 'item'
+                    'label' => __('Title', 'PayPal', false),
+                    'field' => 'title'
                 ),
                 array(
                     'label' => __('Price', 'PayPal', false),

@@ -20,7 +20,8 @@ class Model
 
 
         $data = array(
-            'item' => $paymentData['item'],
+            'title' => $paymentData['title'],
+            'orderId' => $paymentData['id'],
             'currency' => $paymentData['currency'],
             'price' => $paymentData['price'],
             'userId' => $userId,
