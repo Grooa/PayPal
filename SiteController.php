@@ -24,7 +24,8 @@ class SiteController extends \Ip\Controller
         }
 
         if ($order['isPaid']) {
-            $answer = new \Ip\Response\Redirect(ipRouteUrl(array('paymentId' => $paymentId, 'securityCode' => $securityCode)));
+            $statusPageUrl = ipRouteUrl('PayPal_status', array('paymentId' => $paymentId, 'securityCode' => $securityCode));
+            $answer = new \Ip\Response\Redirect($statusPageUrl);
         } else {
             //redirect to the payment
             $paypalModel = PayPalModel::instance();
@@ -43,16 +44,17 @@ class SiteController extends \Ip\Controller
 
     public function status($paymentId, $securityCode)
     {
-        $order = Model::getPayment($paymentId);
-        if (!$order) {
+        $payment = Model::getPayment($paymentId);
+        if (!$payment) {
             throw new \Ip\Exception('Unknown order. Id: ' . $paymentId);
         }
-        if ($order['securityCode'] != $securityCode) {
+        if ($payment['securityCode'] != $securityCode) {
             throw new \Ip\Exception('Incorrect order security code');
         }
 
         $data = array(
-            'order' => $order
+            'payment' => $payment,
+            'paymentUrl' => ipRouteUrl('PayPal_pay', array('paymentId' => $payment['id'], 'securityCode' => $payment['securityCode']))
         );
         $view = ipView('view/page/status.php', $data);
         return $view;

@@ -1,6 +1,6 @@
 <?php
 
-$routes['PayPal/{paymentId}/{securityCode}'] = array(
+$routes['paypal/pay/{paymentId}/{securityCode}'] = array(
     'name' => 'PayPal_pay',
     'plugin' => 'PayPal',
     'controller' => 'SiteController',
@@ -8,7 +8,7 @@ $routes['PayPal/{paymentId}/{securityCode}'] = array(
 );
 
 
-$routes['PayPalIPN'] = array(
+$routes['paypal/ipn'] = array(
     'name' => 'PayPal_ipn',
     'plugin' => 'PayPal',
     'controller' => 'PublicController',
@@ -16,14 +16,14 @@ $routes['PayPalIPN'] = array(
 );
 
 
-$routes['PayPalUserBack'] = array(
+$routes['paypal/userback'] = array(
     'name' => 'PayPal_userBack',
     'plugin' => 'PayPal',
     'controller' => 'PublicController',
     'action' => 'userBack'
 );
 
-$routes['PayPalStatus/{paymentId}/{securityCode}'] = array(
+$routes['paypal/status/{paymentId}/{securityCode}'] = array(
     'name' => 'PayPal_status',
     'plugin' => 'PayPal',
     'controller' => 'SiteController',
