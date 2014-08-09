@@ -9,7 +9,7 @@ namespace Plugin\PayPal;
 
 class Model
 {
-    public static function createOrder($paymentData, $userId = null)
+    public static function createPayment($paymentData, $userId = null)
     {
         if ($userId == null) {
             $userId = ipUser()->userId();
@@ -29,20 +29,20 @@ class Model
         );
 
 
-        $orderId = ipDb()->insert('paypal', $data);
-        return $orderId;
+        $paymentId = ipDb()->insert('paypal', $data);
+        return $paymentId;
     }
 
 
 
-    public static function getOrder($orderId)
+    public static function getPayment($paymentId)
     {
-        $order = ipDb()->selectRow('paypal', '*', array('id' => $orderId));
+        $order = ipDb()->selectRow('paypal', '*', array('id' => $paymentId));
         return $order;
     }
-    public static function update($orderId, $data)
+    public static function update($paymentId, $data)
     {
-        ipDb()->update('paypal', $data, array('id' => $orderId));
+        ipDb()->update('paypal', $data, array('id' => $paymentId));
     }
 
 

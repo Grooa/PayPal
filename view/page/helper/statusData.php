@@ -1,7 +1,7 @@
 <table>
     <tr>
         <td><b><?php echo __('Order ID', 'PayPal') ?></b></td>
-        <td><?php echo esc($order['id']) ?></td>
+        <td><?php echo esc($order['paymentId']) ?></td>
     </tr>
     <tr>
         <td><b><?php echo __('Paid', 'PayPal') ?></b></td>

@@ -1,6 +1,6 @@
 <?php
 
-$routes['PayPal{/orderId}'] = array(
+$routes['PayPal{/paymentId}'] = array(
     'name' => 'PayPal',
     'plugin' => 'PayPal',
     'controller' => 'SiteController',
@@ -23,7 +23,7 @@ $routes['PayPalUserBack'] = array(
     'action' => 'userBack'
 );
 
-$routes['PayPalStatus/{orderId}/{securityCode}'] = array(
+$routes['PayPalStatus/{paymentId}/{securityCode}'] = array(
     'name' => 'PayPal_status',
     'plugin' => 'PayPal',
     'controller' => 'SiteController',

@@ -30,13 +30,13 @@ class PublicController extends \Ip\Controller
         $paypalModel->processPayPalCallback($postData);
 
         $customData = json_decode(ipRequest()->getPost('custom'), true);
-        if (empty($customData['orderId'])) {
+        if (empty($customData['paymentId'])) {
             throw new \Ip\Exception("Unknown order ID");
         }
         if (empty($customData['securityCode'])) {
             throw new \Ip\Exception("Unknown order security code");
         }
-        $orderUrl = ipRouteUrl('PayPal_status', array('orderId' => $customData['orderId'], 'securityCode' => $customData['securityCode']));
+        $orderUrl = ipRouteUrl('PayPal_status', array('paymentId' => $customData['paymentId'], 'securityCode' => $customData['securityCode']));
         return new \Ip\Response\Redirect($orderUrl);
     }
 

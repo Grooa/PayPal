@@ -10,17 +10,17 @@ namespace Plugin\PayPal;
 
 class SiteController extends \Ip\Controller
 {
-    public function pay($orderId)
+    public function pay($paymentId)
     {
-        $order = Model::getOrder($orderId);
+        $order = Model::getPayment($paymentId);
         if (!$order) {
-            throw new \Ip\Exception('Order ' . $orderId . ' doesn\'t exist');
+            throw new \Ip\Exception('Order ' . $paymentId . ' doesn\'t exist');
         }
 
 
 
         if (!$order['userId'] && ipUser()->loggedIn()) {
-            Model::update($orderId, array('userId' => ipUser()->userId()));
+            Model::update($paymentId, array('userId' => ipUser()->userId()));
         }
 
         if ($order['isPaid']) {
@@ -32,7 +32,7 @@ class SiteController extends \Ip\Controller
             $paypalModel = PayPalModel::instance();
 
             $data = array(
-                'form' => $paypalModel->getPaypalForm($orderId)
+                'form' => $paypalModel->getPaypalForm($paymentId)
             );
 
             $answer = ipView('view/page/paymentRedirect.php', $data)->render();
@@ -43,11 +43,11 @@ class SiteController extends \Ip\Controller
 
     }
 
-    public function status($orderId, $securityCode)
+    public function status($paymentId, $securityCode)
     {
-        $order = Model::getOrder($orderId);
+        $order = Model::getPayment($paymentId);
         if (!$order) {
-            throw new \Ip\Exception('Unknown order. Id: ' . $orderId);
+            throw new \Ip\Exception('Unknown order. Id: ' . $paymentId);
         }
         if ($order['securityCode'] != $securityCode) {
             throw new \Ip\Exception('Incorrect order security code');

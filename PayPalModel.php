@@ -60,7 +60,7 @@ class PayPalModel
 
         $customData = json_decode($postData['custom'], true);
 
-        $orderId = isset($customData['orderId']) ? $customData['orderId'] : null;
+        $paymentId = isset($customData['paymentId']) ? $customData['paymentId'] : null;
         $currency = isset($postData['mc_currency']) ? $postData['mc_currency'] : null;
         $receiver = isset($postData['receiver_email']) ? $postData['receiver_email'] : null;
         $amount = isset($postData['mc_gross']) ? $postData['mc_gross'] : null;
@@ -76,10 +76,10 @@ class PayPalModel
 
         switch ($postData['payment_status']) {
             case 'Completed':
-                $order = Model::getOrder($orderId);
+                $order = Model::getPayment($paymentId);
 
                 if (!$order) {
-                    ipLog()->error('PayPal.ipn: Order not found.', array('orderId' => $orderId));
+                    ipLog()->error('PayPal.ipn: Order not found.', array('paymentId' => $paymentId));
                     return;
                 }
 
@@ -110,7 +110,7 @@ class PayPalModel
                 }
 
                 $info = array(
-                    'orderId' => $order['id'],
+                    'paymentId' => $order['id'],
                     'item' => $order['item'],
                     'userId' => $order['userId']
                 );
@@ -137,7 +137,7 @@ class PayPalModel
                     $info['payer_country'] = $postData['residence_country'];
                 }
 
-                Model::update($orderId, $newData);
+                Model::update($paymentId, $newData);
 
 
                 ipEvent('ipPaymentReceived', $info);
@@ -194,24 +194,24 @@ class PayPalModel
 
     }
 
-    public function getPaypalForm($orderId)
+    public function getPaypalForm($paymentId)
     {
         if (!$this->getEmail()) {
             throw new \Ip\Exception('Please enter configuration values for PayPal plugin');
         }
 
 
-        $order = Model::getOrder($orderId);
-        if (!$order) {
-            throw new \Ip\Exception("Can't find order id. " . $orderId);
+        $payment = Model::getPayment($paymentId);
+        if (!$payment) {
+            throw new \Ip\Exception("Can't find order id. " . $paymentId);
         }
 
 
-        $currency = $order['currency'];
+        $currency = $payment['currency'];
         $privateData = array(
-            'orderId' => $orderId,
-            'userId' => $order['userId'],
-            'securityCode' => $order['securityCode']
+            'paymentId' => $paymentId,
+            'userId' => $payment['userId'],
+            'securityCode' => $payment['securityCode']
         );
 
 
@@ -220,14 +220,14 @@ class PayPalModel
             'cmd' => '_xclick',
             'character' => 'utf-8',
             'business' => $this->getEmail(),
-            'amount' => $order['price'] / 100,
+            'amount' => $payment['price'] / 100,
             'currency_code' => $currency,
             'no_shipping' => 1,
             'custom' => json_encode($privateData),
             'return' => ipRouteUrl('PayPal_userBack'),
             'notify_url' => ipRouteUrl('PayPal_ipn'),
-            'item_name' => $order['item'],
-            'item_number' => $order['id']
+            'item_name' => $payment['item'],
+            'item_number' => $payment['id']
         );
 
         $form = new \Ip\Form();
