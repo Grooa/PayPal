@@ -18,20 +18,45 @@ class SiteController extends \Ip\Controller
         }
 
 
+
         if (!$order['userId'] && ipUser()->loggedIn()) {
             Model::update($orderId, array('userId' => ipUser()->userId()));
         }
 
-        $paypalModel = PayPalModel::instance();
+        if ($order['isPaid']) {
+            //TODOX
+            //display order page
+            $answer = 'paid';
+        } else {
+            //redirect to the payment
+            $paypalModel = PayPalModel::instance();
 
-        $data = array(
-            'form' => $paypalModel->getPaypalForm($orderId)
-        );
+            $data = array(
+                'form' => $paypalModel->getPaypalForm($orderId)
+            );
 
-        $answer = ipView('view/page/paymentRedirect.php', $data)->render();
+            $answer = ipView('view/page/paymentRedirect.php', $data)->render();
+        }
 
 
         return $answer;
 
+    }
+
+    public function status($orderId, $securityCode)
+    {
+        $order = Model::getOrder($orderId);
+        if (!$order) {
+            throw new \Ip\Exception('Unknown order. Id: ' . $orderId);
+        }
+        if ($order['securityCode'] != $securityCode) {
+            throw new \Ip\Exception('Incorrect order security code');
+        }
+
+        $data = array(
+            'order' => $order
+        );
+        $view = ipView('view/page/status.php', $data);
+        return $view;
     }
 }

@@ -117,25 +117,31 @@ class PayPalModel
 
                 ipLog()->info('PayPal.ipn: Successful payment', $info);
 
-                ipEvent('ipPaymentReceived', $info);
-
                 $newData = array(
                     'isPaid' => 1
                 );
                 if (isset($postData['first_name'])) {
                     $newData['payer_first_name'] = $postData['first_name'];
+                    $info['payer_first_name'] = $postData['first_name'];
                 }
                 if (isset($postData['last_name'])) {
                     $newData['payer_last_name'] = $postData['last_name'];
+                    $info['payer_last_name'] = $postData['last_name'];
                 }
                 if (isset($postData['payer_email'])) {
                     $newData['payer_email'] = $postData['payer_email'];
+                    $info['payer_email'] = $postData['payer_email'];
                 }
                 if (isset($postData['residence_country'])) {
                     $newData['payer_country'] = $postData['residence_country'];
+                    $info['payer_country'] = $postData['residence_country'];
                 }
 
                 Model::update($orderId, $newData);
+
+
+                ipEvent('ipPaymentReceived', $info);
+
 
                 break;
         }
@@ -204,7 +210,8 @@ class PayPalModel
         $currency = $order['currency'];
         $privateData = array(
             'orderId' => $orderId,
-            'userId' => $order['userId']
+            'userId' => $order['userId'],
+            'securityCode' => $order['securityCode']
         );
 
 
@@ -217,7 +224,7 @@ class PayPalModel
             'currency_code' => $currency,
             'no_shipping' => 1,
             'custom' => json_encode($privateData),
-            'return' => ipRouteUrl('PayPal_ipn'),
+            'return' => ipRouteUrl('PayPal_userBack'),
             'notify_url' => ipRouteUrl('PayPal_ipn'),
             'item_name' => $order['item'],
             'item_number' => $order['id']

@@ -14,3 +14,18 @@ $routes['PayPalIPN'] = array(
     'controller' => 'PublicController',
     'action' => 'ipn'
 );
+
+
+$routes['PayPalUserBack'] = array(
+    'name' => 'PayPal_userBack',
+    'plugin' => 'PayPal',
+    'controller' => 'PublicController',
+    'action' => 'userBack'
+);
+
+$routes['PayPalStatus/{orderId}/{securityCode}'] = array(
+    'name' => 'PayPal_status',
+    'plugin' => 'PayPal',
+    'controller' => 'SiteController',
+    'action' => 'status'
+);

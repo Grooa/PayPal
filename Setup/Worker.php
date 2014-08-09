@@ -27,6 +27,7 @@ class Worker
           `payer_last_name` VARCHAR(255) NULL,
           `payer_email` VARCHAR(255) NULL,
           `payer_country` VARCHAR(255) NULL,
+          `securityCode` VARCHAR(32) NOT NULL COMMENT 'password to access order status via link',
           `createdAt` datetime NOT NULL,
         PRIMARY KEY (`id`)
         ) ENGINE=MyISAM  DEFAULT CHARSET=utf8;

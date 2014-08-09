@@ -24,6 +24,7 @@ class Model
             'currency' => $paymentData['currency'],
             'price' => $paymentData['price'],
             'userId' => $userId,
+            'securityCode' => self::randomString(32),
             'createdAt' => date('Y-m-d H:i:s'),
         );
 
@@ -31,6 +32,8 @@ class Model
         $orderId = ipDb()->insert('paypal', $data);
         return $orderId;
     }
+
+
 
     public static function getOrder($orderId)
     {
@@ -40,5 +43,11 @@ class Model
     public static function update($orderId, $data)
     {
         ipDb()->update('paypal', $data, array('id' => $orderId));
+    }
+
+
+    protected static function randomString($length)
+    {
+        return substr(sha1(rand()), 0, $length);
     }
 }
