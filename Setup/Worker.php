@@ -23,6 +23,8 @@ class Worker
           `title` varchar(255) NOT NULL,
           `currency` varchar(3) NOT NULL,
           `price` int(11) NOT NULL COMMENT 'in cents',
+          `successUrl` VARCHAR(255) NOT NULL,
+          `cancelUrl` VARCHAR(255) NOT NULL,
           `isPaid` tinyint(1) DEFAULT 0,
           `payer_first_name` VARCHAR(255) NULL,
           `payer_last_name` VARCHAR(255) NULL,

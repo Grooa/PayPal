@@ -232,6 +232,12 @@ class PayPalModel
             'item_number' => $payment['id']
         );
 
+        if (!empty($payment['cancelUrl'])) {
+            $values['cancel_return'] = $payment['cancelUrl'];
+        }
+
+
+
         $form = new \Ip\Form();
         $form->addClass('ipsPayPalAutosubmit');
         $form->setAction($this->getPayPalUrl());

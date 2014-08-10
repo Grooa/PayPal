@@ -20,7 +20,9 @@ class Model
 
 
         $data = array(
-            'title' => $paymentData['title'],
+            'title' => empty($paymentData['title']) ? '' : $paymentData['title'],
+            'cancelUrl' => empty($paymentData['cancelUrl']) ? '' : $paymentData['cancelUrl'],
+            'successUrl' => empty($paymentData['successUrl']) ? '' : $paymentData['successUrl'],
             'orderId' => $paymentData['id'],
             'currency' => $paymentData['currency'],
             'price' => $paymentData['price'],
