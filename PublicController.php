@@ -27,18 +27,28 @@ class PublicController extends \Ip\Controller
         if (empty($customData['securityCode'])) {
             throw new \Ip\Exception("Unknown order security code");
         }
-        $orderUrl = ipRouteUrl('PayPal_status', array('paymentId' => $customData['paymentId'], 'securityCode' => $customData['securityCode']));
-
-        $response = new \Ip\Response\Redirect($orderUrl);
 
         $payment = Model::getPayment($customData['paymentId']);
 
-        if (!empty($payment['successUrl'])) {
-            $response = new \Ip\Response\Redirect($payment['successUrl']);
+        if ($payment['isPaid']) {
+            $orderUrl = ipRouteUrl('PayPal_status', array('paymentId' => $customData['paymentId'], 'securityCode' => $customData['securityCode']));
+            $response = new \Ip\Response\Redirect($orderUrl);
+
+            if (!empty($payment['successUrl'])) {
+                $response = new \Ip\Response\Redirect($payment['successUrl']);
+            }
+            $response = ipFilter('PayPal_userBackResponse', $response);
+            return $response;
+        } else {
+            $viewData = array(
+                'payment' => $payment
+            );
+            $response = ipView('view/paymentError.php', $viewData);
+            $response = ipFilter('PayPal_userBackResponseError', $response);
+            return $response;
         }
 
-        $response = ipFilter('PayPal_userBackResponse', $response);
-        return $response;
+
     }
 
     protected function processPayPalNotification()

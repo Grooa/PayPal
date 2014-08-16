@@ -7,7 +7,7 @@
 namespace Plugin\PayPal;
 
 
-class Payment extends \Ip\SubscriptionPayment
+class Payment extends \Ip\Payment
 {
     public function name()
     {
