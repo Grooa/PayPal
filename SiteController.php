@@ -23,9 +23,16 @@ class SiteController extends \Ip\Controller
             Model::update($paymentId, array('userId' => ipUser()->userId()));
         }
 
+        $paymentModel = PayPalModel::instance();
+        if (!$order['isPaid'] && $paymentModel->isSkipMode()) {
+            $paymentModel->markAsPaid($paymentId);
+            $order = Model::getPayment($paymentId);
+        }
+
+
         if ($order['isPaid']) {
-            $statusPageUrl = ipRouteUrl('PayPal_status', array('paymentId' => $paymentId, 'securityCode' => $securityCode));
-            $answer = new \Ip\Response\Redirect($statusPageUrl);
+            $response = Helper::responseAfterPayment($paymentId, $securityCode);
+            $answer = $response;
         } else {
             //redirect to the payment
             $paypalModel = PayPalModel::instance();

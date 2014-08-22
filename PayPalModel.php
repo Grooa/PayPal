@@ -88,7 +88,10 @@ class PayPalModel
                     return;
                 }
 
-                $orderPrice = substr_replace($payment['price'], '.', -2, 0);
+                $orderPrice = $payment['price'];
+                $orderPrice = str_pad($orderPrice, 3, "0", STR_PAD_LEFT);
+                $orderPrice = substr_replace($orderPrice, '.', -2, 0);
+
                 if ($amount != $orderPrice) {
                     ipLog()->error('PayPal.ipn: IPN rejected. Price doesn\'t match', array('paypal price' => $amount, 'expected price' => '' . $orderPrice));
                     return;
@@ -119,30 +122,26 @@ class PayPalModel
 
                 ipLog()->info('PayPal.ipn: Successful payment', $info);
 
-                $newData = array(
-                    'isPaid' => 1
-                );
+                $newData = array();
+                $eventData = array();
                 if (isset($postData['first_name'])) {
                     $newData['payer_first_name'] = $postData['first_name'];
-                    $info['payer_first_name'] = $postData['first_name'];
+                    $eventData['payer_first_name'] = $postData['first_name'];
                 }
                 if (isset($postData['last_name'])) {
                     $newData['payer_last_name'] = $postData['last_name'];
-                    $info['payer_last_name'] = $postData['last_name'];
+                    $eventData['payer_last_name'] = $postData['last_name'];
                 }
                 if (isset($postData['payer_email'])) {
                     $newData['payer_email'] = $postData['payer_email'];
-                    $info['payer_email'] = $postData['payer_email'];
+                    $eventData['payer_email'] = $postData['payer_email'];
                 }
                 if (isset($postData['residence_country'])) {
                     $newData['payer_country'] = $postData['residence_country'];
-                    $info['payer_country'] = $postData['residence_country'];
+                    $eventData['payer_country'] = $postData['residence_country'];
                 }
 
-                Model::update($paymentId, $newData);
-
-
-                ipEvent('ipPaymentReceived', $info);
+                $this->markAsPaid($paymentId, $newData, $eventData);
 
 
                 break;
@@ -151,6 +150,25 @@ class PayPalModel
 
 
 
+
+    }
+
+    public function markAsPaid($paymentId, $dbData = array(), $eventData = array())
+    {
+        $payment = Model::getPayment($paymentId);
+
+        $dbData['isPaid'] = 1;
+        Model::update($paymentId, $dbData);
+
+        $info = array(
+            'id' => $payment['orderId'],
+            'paymentId' => $payment['id'],
+            'paymentMethod' => 'PayPal',
+            'title' => $payment['title'],
+            'userId' => $payment['userId']
+        );
+        $info = array_merge($info, $eventData);
+        ipEvent('ipPaymentReceived', $info);
 
     }
 
