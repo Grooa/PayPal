@@ -16,7 +16,7 @@ class Payment extends \Ip\Payment
 
     public function icon($width = null, $height = null)
     {
-        return '';
+        return ipFileUrl('Plugin/PayPal/assets/PayPal.svg');
     }
 
     /**
