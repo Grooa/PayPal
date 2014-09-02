@@ -50,7 +50,7 @@ class PayPalModel
 
         $response = $this->httpPost($postUrl, $postData);
 
-        if (!$response["status"] || $response["httpResponse"] != 'VERIFIED') {
+        if (!$response["status"]) {
             ipLog()->error(
                 'PayPal.ipn: notification check error',
                 $response
