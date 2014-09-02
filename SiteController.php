@@ -12,25 +12,29 @@ class SiteController extends \Ip\Controller
 {
     public function pay($paymentId, $securityCode)
     {
-        $order = Model::getPayment($paymentId);
-        if (!$order) {
-            throw new \Ip\Exception('Order ' . $paymentId . ' doesn\'t exist');
+        $payment = Model::getPayment($paymentId);
+        if (!$payment) {
+            throw new \Ip\Exception('Payment ' . $paymentId . ' doesn\'t exist');
+        }
+
+        if ($payment['securityCode'] != $securityCode) {
+            throw new \Ip\Exception('Payment security code is incorrect. Order Id '. $paymentId . '. SecurityCode ' . $securityCode);
         }
 
 
 
-        if (!$order['userId'] && ipUser()->loggedIn()) {
+        if (!$payment['userId'] && ipUser()->loggedIn()) {
             Model::update($paymentId, array('userId' => ipUser()->userId()));
         }
 
         $paymentModel = PayPalModel::instance();
-        if (!$order['isPaid'] && $paymentModel->isSkipMode()) {
+        if (!$payment['isPaid'] && $paymentModel->isSkipMode()) {
             $paymentModel->markAsPaid($paymentId);
-            $order = Model::getPayment($paymentId);
+            $payment = Model::getPayment($paymentId);
         }
 
 
-        if ($order['isPaid']) {
+        if ($payment['isPaid']) {
             $response = Helper::responseAfterPayment($paymentId, $securityCode);
             $answer = $response;
         } else {
