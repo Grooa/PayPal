@@ -28,6 +28,7 @@ class SiteController extends \Ip\Controller
         }
 
         $paymentModel = PayPalModel::instance();
+
         if (!$payment['isPaid'] && $paymentModel->isSkipMode()) {
             $paymentModel->markAsPaid($paymentId);
             $payment = Model::getPayment($paymentId);
@@ -41,9 +42,13 @@ class SiteController extends \Ip\Controller
             //redirect to the payment
             $paypalModel = PayPalModel::instance();
 
-            $data = array(
-                'form' => $paypalModel->getPaypalForm($paymentId)
-            );
+            try {
+                $data = array(
+                    'form' => $paypalModel->getPaypalForm($paymentId)
+                );
+            } catch (\Ip\Exception $e) {
+                return $e->getMessage();
+            }
 
             $answer = ipView('view/page/paymentRedirect.php', $data)->render();
         }
