@@ -22,6 +22,7 @@ class PublicController extends \Ip\Controller
 
         $customData = json_decode(ipRequest()->getPost('custom'), true);
         if (empty($customData['paymentId'])) {
+            return new \Ip\Response\Redirect(ipConfig()->baseUrl());
             throw new \Ip\Exception("Unknown order ID");
         }
         if (empty($customData['securityCode'])) {
