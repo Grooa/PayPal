@@ -43,7 +43,7 @@ class PublicController extends \Ip\Controller
             $viewData = array(
                 'payment' => $payment
             );
-            $response = ipView('view/paymentError.php', $viewData);
+            $response = ipView('view/page/paymentError.php', $viewData);
             $response = ipFilter('PayPal_userBackResponseError', $response);
             return $response;
         }
